@@ -9,6 +9,7 @@ import { AdministradorDashboard } from "@/components/AdministradorDashboard";
 import { FaturamentoDashboard } from "@/components/FaturamentoDashboard";
 import { PerfilDashboard } from "@/components/PerfilDashboard";
 import { ProgramacaoDashboard } from "@/components/ProgramacaoDashboard";
+import { LoginPerfil } from "@/components/LoginPerfil";
 import { API_URL, getPainelAutomacao } from "@/lib/api";
 import type { Perfil } from "@/data/perfis";
 
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [perfil, setPerfil] = useState<Perfil | null>(null);
+  const [autenticado, setAutenticado] = useState(false);
 
   const painel = useQuery({
     queryKey: ["automacao", "painel"],
@@ -38,30 +40,46 @@ function Index() {
 
   function selecionar(p: Perfil) {
     setPerfil(p);
+    setAutenticado(false);
+  }
+
+  function voltarParaSelecao() {
+    setPerfil(null);
+    setAutenticado(false);
+  }
+
+  if (perfil && !autenticado) {
+    return (
+      <LoginPerfil
+        perfil={perfil}
+        onVoltar={voltarParaSelecao}
+        onEntrar={() => setAutenticado(true)}
+      />
+    );
   }
 
   if (perfil?.id === "gerencia-geral") {
-    return <GerenciaGeralDashboard onVoltar={() => setPerfil(null)} />;
+    return <GerenciaGeralDashboard onVoltar={voltarParaSelecao} />;
   }
 
   if (perfil?.id === "administrativo") {
-    return <AdministrativoDashboard onVoltar={() => setPerfil(null)} perfil="Administrativo" />;
+    return <AdministrativoDashboard onVoltar={voltarParaSelecao} perfil="Administrativo" />;
   }
 
   if (perfil?.id === "administrador") {
-    return <AdministradorDashboard onVoltar={() => setPerfil(null)} />;
+    return <AdministradorDashboard onVoltar={voltarParaSelecao} />;
   }
 
   if (perfil?.id === "faturamento-medicao") {
-    return <FaturamentoDashboard onVoltar={() => setPerfil(null)} />;
+    return <FaturamentoDashboard onVoltar={voltarParaSelecao} />;
   }
 
   if (perfil?.id === "programacao") {
-    return <ProgramacaoDashboard onVoltar={() => setPerfil(null)} />;
+    return <ProgramacaoDashboard onVoltar={voltarParaSelecao} />;
   }
 
   if (perfil) {
-    return <PerfilDashboard perfil={perfil} onVoltar={() => setPerfil(null)} />;
+    return <PerfilDashboard perfil={perfil} onVoltar={voltarParaSelecao} />;
   }
 
   return (
