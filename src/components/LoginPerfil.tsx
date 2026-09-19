@@ -5,9 +5,10 @@ import type { Perfil } from "@/data/perfis";
 type Props = {
   perfil: Perfil;
   onVoltar: () => void;
+  onEntrar: () => void;
 };
 
-export function LoginPerfil({ perfil, onVoltar }: Props) {
+export function LoginPerfil({ perfil, onVoltar, onEntrar }: Props) {
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -47,6 +48,7 @@ export function LoginPerfil({ perfil, onVoltar }: Props) {
           className="mt-6 space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
+            onEntrar();
           }}
         >
           <div>
@@ -60,6 +62,7 @@ export function LoginPerfil({ perfil, onVoltar }: Props) {
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
                 autoComplete="username"
+                required
                 className="w-full rounded-full border border-eg-border bg-eg-surface py-3 pl-11 pr-4 text-sm text-eg-ink outline-none transition-colors placeholder:text-eg-ink-soft/70 focus:border-eg-accent"
                 placeholder="seu.usuario"
               />
@@ -78,6 +81,7 @@ export function LoginPerfil({ perfil, onVoltar }: Props) {
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 autoComplete="current-password"
+                required
                 className="w-full rounded-full border border-eg-border bg-eg-surface py-3 pl-11 pr-11 text-sm text-eg-ink outline-none transition-colors placeholder:text-eg-ink-soft/70 focus:border-eg-accent"
                 placeholder="••••••••"
               />
