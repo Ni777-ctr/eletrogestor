@@ -23,7 +23,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type CategoriaId = "GESTAO" | "OPERACAO" | "SUPORTE" | "TECNICO";
+export type CategoriaId =
+  | "GESTAO"
+  | "OPERACAO"
+  | "SUPRIMENTOS"
+  | "SEGURANCA_QUALIDADE"
+  | "TECNICO";
 
 export type Perfil = {
   id: string;
@@ -36,7 +41,8 @@ export type Perfil = {
 export const CATEGORIAS: { id: CategoriaId; label: string }[] = [
   { id: "GESTAO", label: "GESTÃO" },
   { id: "OPERACAO", label: "OPERAÇÃO" },
-  { id: "SUPORTE", label: "SUPORTE" },
+  { id: "SUPRIMENTOS", label: "SUPRIMENTOS" },
+  { id: "SEGURANCA_QUALIDADE", label: "SEGURANÇA & QUALIDADE" },
   { id: "TECNICO", label: "TÉCNICO" },
 ];
 
@@ -115,61 +121,63 @@ export const PERFIS: Perfil[] = [
     icone: Map,
   },
 
-  // SUPORTE (8)
+  // SUPRIMENTOS (4)
   {
     id: "almoxarifado",
     nome: "Almoxarifado",
     descricao: "Retirada, instalação e devolução de materiais.",
-    categoria: "SUPORTE",
+    categoria: "SUPRIMENTOS",
     icone: Package,
   },
   {
     id: "suprimentos-compras",
     nome: "Suprimentos / Compras",
     descricao: "Reposição de estoque mínimo e aquisição de itens.",
-    categoria: "SUPORTE",
+    categoria: "SUPRIMENTOS",
     icone: ShoppingCart,
-  },
-  {
-    id: "logistica-frota",
-    nome: "Logística / Frota",
-    descricao: "Gestão de veículos, deslocamentos e disponibilidade.",
-    categoria: "SUPORTE",
-    icone: Truck,
   },
   {
     id: "inventario",
     nome: "Inventário",
     descricao: "Conferência de inventário e reconciliação de saldos.",
-    categoria: "SUPORTE",
+    categoria: "SUPRIMENTOS",
     icone: Boxes,
   },
+  {
+    id: "logistica-frota",
+    nome: "Logística / Frota",
+    descricao: "Gestão de veículos, deslocamentos e disponibilidade.",
+    categoria: "SUPRIMENTOS",
+    icone: Truck,
+  },
+
+  // SEGURANÇA & QUALIDADE (4)
   {
     id: "documentacao-pre-obra",
     nome: "Documentação Pré-Obra",
     descricao: "Pré-APR, projetos e liberações antes do início.",
-    categoria: "SUPORTE",
+    categoria: "SEGURANCA_QUALIDADE",
     icone: FolderInput,
   },
   {
     id: "documentacao-pos-obra",
     nome: "Documentação Pós-Obra",
     descricao: "As-built, evidências e encerramento documental.",
-    categoria: "SUPORTE",
+    categoria: "SEGURANCA_QUALIDADE",
     icone: FolderOutput,
   },
   {
     id: "seguranca-trabalho",
     nome: "Segurança do Trabalho",
     descricao: "Habilitações, zonas de segurança e bloqueios de Pré-APR.",
-    categoria: "SUPORTE",
+    categoria: "SEGURANCA_QUALIDADE",
     icone: ShieldAlert,
   },
   {
     id: "qualidade",
     nome: "Qualidade",
     descricao: "Auditoria de execução, divergências e conformidade.",
-    categoria: "SUPORTE",
+    categoria: "SEGURANCA_QUALIDADE",
     icone: BadgeCheck,
   },
 

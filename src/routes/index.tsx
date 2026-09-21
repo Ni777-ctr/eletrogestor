@@ -9,6 +9,7 @@ import { AdministradorDashboard } from "@/components/AdministradorDashboard";
 import { FaturamentoDashboard } from "@/components/FaturamentoDashboard";
 import { PerfilDashboard } from "@/components/PerfilDashboard";
 import { ProgramacaoDashboard } from "@/components/ProgramacaoDashboard";
+import { SuprimentosDashboard } from "@/components/SuprimentosDashboard";
 import { API_URL, getPainelAutomacao } from "@/lib/api";
 import type { Perfil } from "@/data/perfis";
 
@@ -58,6 +59,10 @@ function Index() {
 
   if (perfil?.id === "programacao") {
     return <ProgramacaoDashboard onVoltar={() => setPerfil(null)} />;
+  }
+
+  if (perfil?.id === "suprimentos-compras") {
+    return <SuprimentosDashboard onVoltar={() => setPerfil(null)} />;
   }
 
   if (perfil) {

@@ -39,13 +39,13 @@ export function SelecaoPerfil({ onSelecionar, perfilSelecionadoId }: Props) {
   }, [busca, buscando, abaAtiva]);
 
   return (
-    <section className="flex min-h-screen flex-col bg-eg-surface px-6 py-10 lg:px-12 lg:py-14">
+    <section className="flex min-h-screen flex-col bg-eg-canvas px-6 py-10 lg:px-12 lg:py-14">
       <header>
-        <p className="text-[11px] font-semibold tracking-[0.18em] text-eg-accent">PASSO 1 DE 2</p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-eg-ink">
+        <p className="text-[10px] font-semibold tracking-[0.16em] text-eg-accent">ACESSO AO SISTEMA</p>
+        <h2 className="mt-2 text-[26px] font-semibold tracking-tight text-eg-text">
           Selecione seu perfil de acesso
         </h2>
-        <p className="mt-1.5 text-sm text-eg-ink-soft">
+        <p className="mt-1.5 max-w-xl text-sm leading-6 text-eg-muted">
           O perfil define os módulos e permissões disponíveis para você.
         </p>
       </header>
@@ -56,39 +56,37 @@ export function SelecaoPerfil({ onSelecionar, perfilSelecionadoId }: Props) {
         <input
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
-          placeholder="Buscar perfil..."
-          aria-label="Buscar perfil"
-          className="w-full rounded-full border border-eg-border bg-eg-surface py-3 pl-11 pr-10 text-sm text-eg-ink outline-none transition-colors placeholder:text-eg-ink-soft/70 focus:border-eg-accent"
+          placeholder="Buscar cargo ou perfil..."
+          aria-label="Buscar cargo ou perfil"
+          className="w-full rounded-lg border border-eg-border bg-eg-surface py-3 pl-11 pr-10 text-sm text-eg-text outline-none transition-colors placeholder:text-eg-muted focus:border-eg-accent focus:ring-1 focus:ring-eg-accent"
         />
         {buscando && (
           <button
             type="button"
             onClick={() => setBusca("")}
             aria-label="Limpar busca"
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-eg-ink-soft transition-colors hover:bg-eg-accent-soft"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-eg-muted transition-colors hover:bg-eg-surface-hover hover:text-eg-text"
           >
             <X className="h-4 w-4" />
           </button>
         )}
       </div>
 
-      {/* Barra de abas flutuante */}
       <div className="sticky top-3 z-20 mt-4">
         <div
-          className={`relative flex gap-1 overflow-x-auto rounded-full border border-eg-border bg-eg-surface/75 p-1.5 backdrop-blur transition-opacity [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+          className={`relative flex gap-1 overflow-x-auto rounded-lg border border-eg-border bg-eg-surface p-1 pb-2 transition-opacity [scrollbar-color:var(--eg-border)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-eg-border [&::-webkit-scrollbar-track]:bg-transparent ${
             buscando ? "pointer-events-none opacity-40" : "opacity-100"
           }`}
-          style={{ boxShadow: "0 8px 24px rgba(249,115,22,0.15)", scrollSnapType: "x mandatory" }}
+          style={{ scrollSnapType: "x mandatory" }}
           role="tablist"
           aria-label="Categorias de perfil"
         >
           <span
             aria-hidden
-            className="absolute top-1.5 bottom-1.5 rounded-full bg-eg-accent transition-all duration-300 ease-out"
+            className="absolute top-1 bottom-1 rounded-md bg-eg-accent transition-all duration-200 ease-out"
             style={{
               left: indicador.left,
               width: indicador.width,
-              boxShadow: "0 8px 24px rgba(249,115,22,0.15)",
             }}
           />
           {CATEGORIAS.map((cat) => {
@@ -104,17 +102,17 @@ export function SelecaoPerfil({ onSelecionar, perfilSelecionadoId }: Props) {
                 type="button"
                 disabled={buscando}
                 onClick={() => setAbaAtiva(cat.id)}
-                style={{ scrollSnapAlign: "center", transform: ativa ? "scale(1.03)" : undefined }}
-                className={`relative z-10 flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold tracking-wide transition-all duration-300 ${
+                style={{ scrollSnapAlign: "center" }}
+                className={`relative z-10 flex shrink-0 items-center gap-1.5 rounded-md px-3 py-2 text-[10px] font-medium tracking-wide transition-colors ${
                   ativa
-                    ? "text-eg-surface"
-                    : "text-eg-ink-soft hover:bg-eg-accent-soft"
+                    ? "text-zinc-950"
+                    : "text-eg-muted hover:bg-eg-surface-hover hover:text-eg-text"
                 }`}
               >
                 {cat.label}
                 <span
-                  className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                    ativa ? "bg-eg-surface/25 text-eg-surface" : "bg-eg-accent-soft text-eg-accent"
+                  className={`rounded px-1.5 py-0.5 text-[9px] font-semibold ${
+                    ativa ? "bg-zinc-950/15 text-zinc-950" : "bg-eg-surface-hover text-eg-muted"
                   }`}
                 >
                   {contagem[cat.id]}
@@ -137,32 +135,31 @@ export function SelecaoPerfil({ onSelecionar, perfilSelecionadoId }: Props) {
           return (
             <article
               key={perfil.id}
-              style={selecionado ? { transform: "scale(1.02)" } : undefined}
-              className={`group flex items-start gap-3 rounded-2xl border bg-eg-surface p-4 transition-all duration-200 hover:border-eg-accent hover:shadow-[0_8px_24px_rgba(249,115,22,0.15)] ${
+              className={`group flex min-h-40 items-start gap-4 rounded-lg border bg-eg-surface-raised p-5 transition-colors duration-150 hover:bg-eg-surface-hover ${
                 selecionado
-                  ? "border-eg-accent shadow-[0_8px_24px_rgba(249,115,22,0.15)]"
-                  : "border-eg-border"
+                  ? "border-eg-accent"
+                  : "border-eg-border hover:border-zinc-600"
               }`}
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-eg-accent-soft">
-                <Icone className="h-5 w-5 text-eg-accent" />
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-eg-border bg-eg-surface">
+                <Icone className="h-[18px] w-[18px] stroke-[1.75] text-eg-muted transition-colors group-hover:text-eg-text" />
               </span>
               <span className="min-w-0 flex-1">
                 {buscando && (
-                  <span className="mb-1 inline-block rounded-full bg-eg-accent-soft px-2 py-0.5 text-[9px] font-bold tracking-wider text-eg-accent">
+                  <span className="mb-2 inline-block rounded bg-eg-accent-soft px-2 py-0.5 text-[9px] font-semibold tracking-wider text-eg-accent">
                     {CATEGORIAS.find((c) => c.id === perfil.categoria)?.label}
                   </span>
                 )}
-                <span className="block text-sm font-bold text-eg-ink">{perfil.nome}</span>
-                <span className="mt-0.5 block text-xs leading-snug text-eg-ink-soft">
+                <span className="block text-sm font-semibold text-eg-text">{perfil.nome}</span>
+                <span className="mt-1 block text-xs leading-5 text-eg-muted">
                   {perfil.descricao}
                 </span>
                 <button
                   type="button"
                   onClick={() => onSelecionar(perfil)}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-eg-accent px-3 py-1.5 text-xs font-bold text-eg-surface transition-transform hover:scale-[1.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-eg-accent focus-visible:ring-offset-2"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-eg-border bg-eg-surface px-3 py-2 text-xs font-semibold text-eg-text transition-colors hover:bg-eg-surface-hover hover:text-eg-accent focus:outline-none focus-visible:border-eg-accent"
                 >
-                  Entrar
+                  Abrir módulo
                   <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </button>
               </span>
@@ -170,7 +167,7 @@ export function SelecaoPerfil({ onSelecionar, perfilSelecionadoId }: Props) {
           );
         })}
         {perfisVisiveis.length === 0 && (
-          <p className="col-span-full py-8 text-center text-sm text-eg-ink-soft">
+          <p className="col-span-full py-8 text-center text-sm text-eg-muted">
             Nenhum perfil encontrado para “{busca}”.
           </p>
         )}

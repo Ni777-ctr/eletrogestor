@@ -1,12 +1,8 @@
 const TAGS = [
-  "Programação de obras",
-  "Viabilidade",
-  "Pré-APR 45 dias",
-  "Faturamento",
-  "Materiais e kits",
-  "Inventário",
-  "Self-Healing",
-  "Subestação Digital",
+  "Obras & Programação",
+  "Segurança & Qualidade",
+  "Suprimentos",
+  "Faturamento & Medição",
 ];
 
 type Props = {
@@ -23,39 +19,40 @@ export function PainelInstitucional({ percentualRestabelecimento, carregandoPain
     {
       valor:
         carregandoPainel || percentualRestabelecimento === null
-          ? "—"
+          ? "24h"
           : `${percentualRestabelecimento}%`,
-      legenda: "restabelecimento automático",
+      legenda:
+        carregandoPainel || percentualRestabelecimento === null
+          ? "monitoramento contínuo"
+          : "restabelecimento automático",
     },
 
   ];
 
   return (
-    <aside className="eg-panel-institucional flex flex-col justify-between gap-10 px-8 py-10 lg:px-14 lg:py-14">
+    <aside className="eg-panel-institucional flex flex-col justify-between gap-10 border-b border-eg-border px-8 py-10 lg:border-b-0 lg:border-r lg:px-14 lg:py-14">
       <div>
         <div className="flex items-center gap-3">
           <img
             src="/logo-eg.jpeg"
             alt="Logo EG"
-            className="h-11 w-11 rounded-xl bg-white object-contain p-0.5"
-            style={{ boxShadow: "0 8px 24px rgba(249,115,22,0.15)" }}
+            className="h-12 w-12 rounded-lg border border-eg-border bg-eg-surface object-contain p-0.5"
           />
           <div className="leading-tight">
-            <p className="text-lg font-bold tracking-tight text-eg-ink">EletroGestor</p>
-            <p className="text-[10px] font-semibold tracking-[0.18em] text-eg-ink-soft">
-              VERSÃO 2.0
+            <p className="text-xl font-semibold tracking-[-0.025em] text-eg-text [font-family:Inter,ui-sans-serif,system-ui,sans-serif]">
+              EletroGestor
             </p>
           </div>
         </div>
 
-        <div className="mt-7 inline-flex items-center gap-2 rounded-full border border-eg-accent/30 bg-eg-surface/70 px-3 py-1.5 backdrop-blur">
-          <span className="eg-pulse h-2 w-2 rounded-full bg-eg-accent" />
-          <span className="text-xs font-medium text-eg-ink-soft">
+        <div className="mt-7 inline-flex items-center gap-2 rounded-md border border-eg-border bg-eg-surface px-3 py-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-eg-accent" />
+          <span className="text-xs font-medium text-eg-muted">
             Operação conectada em tempo real
           </span>
         </div>
 
-        <h1 className="mt-8 max-w-md text-4xl font-bold leading-[1.12] tracking-tight text-eg-ink lg:text-5xl">
+        <h1 className="mt-7 max-w-md text-[26px] font-semibold leading-[1.15] tracking-tight text-eg-text lg:text-[31px]">
           Toda a obra
           <br />
           de rede elétrica
@@ -63,7 +60,7 @@ export function PainelInstitucional({ percentualRestabelecimento, carregandoPain
           em um só sistema.
         </h1>
 
-        <p className="mt-5 max-w-md text-sm leading-relaxed text-eg-ink-soft">
+        <p className="mt-4 max-w-md text-sm leading-6 text-eg-muted">
           Programação, viabilidade, segurança, materiais, inventário e faturamento em um único
           fluxo — agora também com automação de rede, self-healing e subestações digitais
           monitoradas em tempo real.
@@ -73,7 +70,7 @@ export function PainelInstitucional({ percentualRestabelecimento, carregandoPain
           {TAGS.map((tag) => (
             <li
               key={tag}
-              className="rounded-full border border-eg-accent/25 bg-eg-surface/50 px-3 py-1 text-[11px] font-medium text-eg-ink-soft"
+              className="rounded-md border border-eg-border bg-eg-surface px-2.5 py-1 text-[11px] font-medium text-eg-muted"
             >
               {tag}
             </li>
@@ -82,16 +79,16 @@ export function PainelInstitucional({ percentualRestabelecimento, carregandoPain
       </div>
 
       <div>
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
           {estatisticas.map((item) => (
-            <div key={item.legenda}>
-              <dt className="text-3xl font-bold tracking-tight text-eg-accent">{item.valor}</dt>
-              <dd className="mt-1 text-[11px] leading-snug text-eg-ink-soft">{item.legenda}</dd>
+            <div key={item.legenda} className="rounded-lg border border-eg-border bg-eg-surface-raised p-3">
+              <dt className="text-2xl font-semibold tracking-tight text-eg-text">{item.valor}</dt>
+              <dd className="mt-1 text-[10px] leading-snug text-eg-muted">{item.legenda}</dd>
             </div>
           ))}
         </dl>
 
-        <p className="mt-10 max-w-sm border-t border-eg-accent/20 pt-4 text-[11px] leading-relaxed text-eg-ink-soft">
+        <p className="mt-10 max-w-sm border-t border-eg-border pt-4 text-[11px] leading-relaxed text-eg-muted">
           Acesso restrito a colaboradores autorizados. Todas as tentativas de acesso são
           registradas em log de auditoria.
         </p>
