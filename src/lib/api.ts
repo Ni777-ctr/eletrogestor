@@ -6,9 +6,79 @@
 
 export const API_URL = (import.meta.env["VITE_API_URL"] as string | undefined) ?? "";
 
+export type UsuarioAutenticado = {
+  id: number;
+  nome: string;
+  usuario: string;
+  email: string | null;
+  ativo: boolean;
+  perfil_id: string;
+  mfa_habilitado: boolean;
+  mfa_obrigatorio: boolean;
+};
+
+export type Sessao = {
+  access_token: string;
+  refresh_token: string;
+  usuario: UsuarioAutenticado;
+};
+
+type RespostaLogin = Partial<Sessao> & {
+  mfa_pendente?: boolean;
+  mfa_token?: string;
+};
+
+const CHAVE_SESSAO = "eletrogestor.sessao";
+
+export function obterSessao(): Sessao | null {
+  if (typeof window === "undefined") return null;
+  const valor = window.sessionStorage.getItem(CHAVE_SESSAO);
+  if (!valor) return null;
+
+  try {
+    return JSON.parse(valor) as Sessao;
+  } catch {
+    window.sessionStorage.removeItem(CHAVE_SESSAO);
+    return null;
+  }
+}
+
+export function encerrarSessao() {
+  if (typeof window !== "undefined") window.sessionStorage.removeItem(CHAVE_SESSAO);
+}
+
+export async function fazerLogin(usuario: string, senha: string): Promise<Sessao> {
+  if (!API_URL) throw new Error("A URL da API não foi configurada.");
+
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ usuario, senha }),
+  });
+
+  const dados = (await res.json()) as RespostaLogin & { detail?: string };
+  if (!res.ok) throw new Error(dados.detail ?? "Não foi possível entrar.");
+  if (dados.mfa_pendente) throw new Error("Este usuário exige a confirmação de 2FA.");
+  if (!dados.access_token || !dados.refresh_token || !dados.usuario) {
+    throw new Error("A API retornou uma sessão incompleta.");
+  }
+
+  const sessao: Sessao = {
+    access_token: dados.access_token,
+    refresh_token: dados.refresh_token,
+    usuario: dados.usuario,
+  };
+  window.sessionStorage.setItem(CHAVE_SESSAO, JSON.stringify(sessao));
+  return sessao;
+}
+
 async function get<T>(path: string): Promise<T> {
+  const sessao = obterSessao();
   const res = await fetch(`${API_URL}${path}`, {
-    headers: { Accept: "application/json" },
+    headers: {
+      Accept: "application/json",
+      ...(sessao ? { Authorization: `Bearer ${sessao.access_token}` } : {}),
+    },
   });
   if (!res.ok) throw new Error(`Falha em ${path}: ${res.status}`);
   return (await res.json()) as T;

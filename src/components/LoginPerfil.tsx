@@ -1,111 +1,98 @@
 import { useState } from "react";
-import { ArrowLeft, Eye, EyeOff, Lock, User } from "lucide-react";
+import { ArrowLeft, KeyRound, LoaderCircle, LogIn, UserRound } from "lucide-react";
 import type { Perfil } from "@/data/perfis";
+import { encerrarSessao, fazerLogin } from "@/lib/api";
 
 type Props = {
   perfil: Perfil;
+  onAutenticado: () => void;
   onVoltar: () => void;
 };
 
-export function LoginPerfil({ perfil, onVoltar }: Props) {
-  const [usuario, setUsuario] = useState("");
+export function LoginPerfil({ perfil, onAutenticado, onVoltar }: Props) {
+  const [usuario, setUsuario] = useState(`teste.${perfil.id}`);
   const [senha, setSenha] = useState("");
-  const [mostrarSenha, setMostrarSenha] = useState(false);
-  const Icone = perfil.icone;
+  const [erro, setErro] = useState("");
+  const [enviando, setEnviando] = useState(false);
+
+  async function entrar(evento: React.FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    setErro("");
+    setEnviando(true);
+
+    try {
+      const sessao = await fazerLogin(usuario.trim(), senha);
+      if (sessao.usuario.perfil_id !== perfil.id) {
+        encerrarSessao();
+        throw new Error(`Este usuário pertence ao perfil ${sessao.usuario.perfil_id}, não ao perfil selecionado.`);
+      }
+      onAutenticado();
+    } catch (causa) {
+      setErro(causa instanceof Error ? causa.message : "Não foi possível entrar.");
+    } finally {
+      setEnviando(false);
+    }
+  }
 
   return (
-    <section className="flex min-h-screen flex-col justify-center bg-eg-surface px-6 py-10 lg:px-12 lg:py-14">
-      <div className="eg-fade-in mx-auto w-full max-w-md">
-        <button
-          type="button"
-          onClick={onVoltar}
-          className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-eg-ink-soft transition-colors hover:bg-eg-accent-soft"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Trocar perfil
-        </button>
-
-        <p className="mt-6 text-[11px] font-semibold tracking-[0.18em] text-eg-accent">
-          PASSO 2 DE 2
-        </p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-eg-ink">Acessar o sistema</h2>
-
-        <div
-          className="mt-5 flex items-center gap-3 rounded-2xl border border-eg-accent bg-eg-surface p-4"
-          style={{ boxShadow: "0 8px 24px rgba(249,115,22,0.15)" }}
-        >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-eg-accent-soft">
-            <Icone className="h-5 w-5 text-eg-accent" />
-          </span>
-          <span>
-            <span className="block text-sm font-bold text-eg-ink">{perfil.nome}</span>
-            <span className="block text-xs text-eg-ink-soft">{perfil.descricao}</span>
-          </span>
-        </div>
-
-        <form
-          className="mt-6 space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <div>
-            <label htmlFor="usuario" className="text-xs font-semibold text-eg-ink">
-              Usuário
-            </label>
-            <div className="relative mt-1.5">
-              <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-eg-ink-soft" />
-              <input
-                id="usuario"
-                value={usuario}
-                onChange={(e) => setUsuario(e.target.value)}
-                autoComplete="username"
-                className="w-full rounded-full border border-eg-border bg-eg-surface py-3 pl-11 pr-4 text-sm text-eg-ink outline-none transition-colors placeholder:text-eg-ink-soft/70 focus:border-eg-accent"
-                placeholder="seu.usuario"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="senha" className="text-xs font-semibold text-eg-ink">
-              Senha
-            </label>
-            <div className="relative mt-1.5">
-              <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-eg-ink-soft" />
-              <input
-                id="senha"
-                type={mostrarSenha ? "text" : "password"}
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                autoComplete="current-password"
-                className="w-full rounded-full border border-eg-border bg-eg-surface py-3 pl-11 pr-11 text-sm text-eg-ink outline-none transition-colors placeholder:text-eg-ink-soft/70 focus:border-eg-accent"
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setMostrarSenha((v) => !v)}
-                aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-eg-ink-soft transition-colors hover:bg-eg-accent-soft"
-              >
-                {mostrarSenha ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
-
+    <main className="min-h-screen bg-[#111214] px-5 py-8 text-[#f5f5f4] sm:px-8">
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md items-center">
+        <section className="w-full rounded-lg border border-[#303238] bg-[#1a1b1f] p-6 shadow-sm sm:p-8">
           <button
-            type="submit"
-            className="w-full rounded-full bg-eg-accent py-3 text-sm font-bold text-eg-surface transition-transform hover:scale-[1.01]"
-            style={{ boxShadow: "0 8px 24px rgba(249,115,22,0.15)" }}
+            type="button"
+            onClick={onVoltar}
+            className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-[#b8bbc2] transition-colors hover:text-[#f5f5f4]"
           >
-            Entrar
+            <ArrowLeft size={16} /> Voltar aos perfis
           </button>
-        </form>
 
-        <p className="mt-6 text-[11px] leading-relaxed text-eg-ink-soft">
-          Acesso restrito a colaboradores autorizados. Todas as tentativas de acesso são
-          registradas em log de auditoria.
-        </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-400">Acesso ao sistema</p>
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight">{perfil.nome}</h1>
+          <p className="mt-2 text-sm leading-6 text-[#b8bbc2]">Entre com suas credenciais para acessar este módulo.</p>
+
+          <form onSubmit={entrar} className="mt-7 space-y-4">
+            <label className="block text-sm font-medium text-[#e5e7eb]">
+              Usuário
+              <span className="relative mt-2 block">
+                <UserRound size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#8a8f98]" />
+                <input
+                  value={usuario}
+                  onChange={(evento) => setUsuario(evento.target.value)}
+                  autoComplete="username"
+                  required
+                  className="h-11 w-full rounded-md border border-[#363941] bg-[#141518] pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-[#777c86] focus:border-amber-500"
+                />
+              </span>
+            </label>
+
+            <label className="block text-sm font-medium text-[#e5e7eb]">
+              Senha
+              <span className="relative mt-2 block">
+                <KeyRound size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#8a8f98]" />
+                <input
+                  type="password"
+                  value={senha}
+                  onChange={(evento) => setSenha(evento.target.value)}
+                  autoComplete="current-password"
+                  required
+                  className="h-11 w-full rounded-md border border-[#363941] bg-[#141518] pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-[#777c86] focus:border-amber-500"
+                />
+              </span>
+            </label>
+
+            {erro && <p role="alert" className="rounded-md border border-red-900/60 bg-red-950/30 px-3 py-2 text-sm text-red-200">{erro}</p>}
+
+            <button
+              type="submit"
+              disabled={enviando}
+              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-amber-500 px-4 text-sm font-semibold text-[#16110a] transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {enviando ? <LoaderCircle size={17} className="animate-spin" /> : <LogIn size={17} />}
+              {enviando ? "Validando acesso..." : "Entrar"}
+            </button>
+          </form>
+        </section>
       </div>
-    </section>
+    </main>
   );
 }
